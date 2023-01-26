@@ -1,64 +1,22 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>AI Form</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
-    <style>
-        /* Add some styles to center the form on the page */
-        body {
-            background-color: #f5f5f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            width: 50%;
-            flex-direction: column;
-        }
-        .logo {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .logo img {
-            width: 100px;
-        }
-        input {
-            border: none;
-            padding: 10px;
-            font-size: 18px;
-            width: 100%;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-        button {
-            border: none;
-            background-color: #333;
-            color: #fff;
-            padding: 10px 20px;
-            font-size: 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-        }
-        button:hover {
-            background-color: #555;
-        }
-    </style>
-  </head>
-  <body>
-    <form action="">
-      <div class="logo">
-        <img src="your-ai-logo-url.jpg" alt="AI logo">
-      </div>
-      <input type="text" placeholder="Enter your text here">
-      <button type="submit">Go</button>
-    </form>
-  </body>
-</html>
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block content %}
+            <div class="form-container">
+                <form action="">
+                <div class="logo">
+                    <img src="{% static 'logo.jpg' %}" alt="AI logo">
+                </div>
+                <input type="text" placeholder="Enter your text here">
+                <button type="submit">Go</button>
+                </form>
+            </div>
+            
+            <div class="post-container">
+                {% for post in posts %}
+                <div class="post">
+                    <h2><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h2>
+                </div>
+                {% endfor %}
+            </div> 
+{% endblock %}
