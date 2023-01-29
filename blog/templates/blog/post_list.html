@@ -1,22 +1,125 @@
 {% extends 'blog/base.html' %}
 {% load static %}
-
 {% block content %}
+
+
             <div class="form-container">
-                <form action="">
-                <div class="logo">
-                    <img src="{% static 'logo.jpg' %}" alt="AI logo">
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    <strong>Error!</strong> 
+                    <ul style="list-style: none;  text-align: left;">
+                        {% for field, error in form.errors.items %}
+                            {{ field }}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
                 </div>
-                <input type="text" placeholder="Enter your text here">
-                <button type="submit">Go</button>
+                {% endif %}
+                <form action='/' method="post">
+                    <div class="logo">
+                        <img src="{% static 'logo.jpg' %}" alt="AI logo">
+                    </div>
+                    <textarea name="x_sequence" rows="5" placeholder="X values, comma or space separated" style="width:100%; margin-bottom:20px" >{% if x_message != None %}{{ x_message }}{% endif %}</textarea>
+                    <textarea name="y_sequence" rows="5" placeholder="Y values, comma or space separated" style="width:100%; margin-bottom:20px" >{% if y_message != None %}{{ y_message }}{% endif %}</textarea>
+                        {% csrf_token %}
+                    <label for="select_field">Select the polynomial degree:</label>
+                    <select name="degree" id="select_field" style="margin-bottom: 20px">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <button class="button-go" type="submit">Go</button>
                 </form>
             </div>
-            
             <div class="post-container">
-                {% for post in posts %}
-                <div class="post">
-                    <h2><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h2>
+                {% autoescape off %}
+                {{ plot_div }}
+                {% endautoescape %}
+                {% if x_sequence != "" %}
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Language</th>
+                        <th scope="col">Code: RMSE {{ rmse }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">Excel</th>
+                        <td>y = {{ excel_formula }}
+                            
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Python</th>
+                        <td>y = {{ python_formula }}
+                            
+                        </td>
+                      </tr>
+                      
+                    </tbody>
+                  </table>
+
+                {% endif %}
+                {% if x_sequence != "" %}
+                <div class="card output" style="margin-bottom: 20px">
+                    <div class="card-header">
+                        X sequence length = {{ x_sequence|length }}  
+                    <button style="padding: 4px; font-size: 15px; float: right; margin-left: 10px" id="copy-button-x">Copy x</button>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text" id="message-box-x">
+                            {{ x_message }}
+                        </p>
+                    </div>
                 </div>
-                {% endfor %}
-            </div> 
+                {% endif %}
+                {% if y_sequence != "" %}
+                <div class="card">
+                    <div class="card-header">
+                        Y sequence length = {{ y_sequence|length }}  
+                    <button style="padding: 4px; font-size: 15px; float: right; margin-left: 10px" id="copy-button-y">Copy y</button>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text" id="message-box-y">
+                            {{ y_message }}
+                        </p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+
+                <script>
+                    var copyButton1 = document.getElementById("copy-button-x");
+                    copyButton1.addEventListener("click", function() {
+                      var messageBox1 = document.getElementById("message-box-x");
+                      var message1 = messageBox1.innerText;
+                  
+                      var tempInput = document.createElement("input");
+                      tempInput.style = "position: absolute; left: -1000px; top: -1000px";
+                      tempInput.value = message1;
+                      document.body.appendChild(tempInput);
+                      tempInput.select();
+                      document.execCommand("copy");
+                      document.body.removeChild(tempInput);
+                    });
+                  
+                    var copyButton2 = document.getElementById("copy-button-y");
+                    copyButton2.addEventListener("click", function() {
+                      var messageBox2 = document.getElementById("message-box-y");
+                      var message2 = messageBox2.innerText;
+                  
+                      var tempInput = document.createElement("input");
+                      tempInput.style = "position: absolute; left: -1000px; top: -1000px";
+                      tempInput.value = message2;
+                      document.body.appendChild(tempInput);
+                      tempInput.select();
+                      document.execCommand("copy");
+                      document.body.removeChild(tempInput);
+                    });
+                  </script>
+            </div>
 {% endblock %}
