@@ -1,2 +1,3 @@
+Python == 3.7.9
 Django~=3.2.15
 plotly == 5.13.0
